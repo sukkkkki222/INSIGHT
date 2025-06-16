@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INSIGHT STUDIO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3A2D5D;
+            --secondary-color: #F5F0FF;
+            --accent-color: #8A4FFF;
+            --hover-color: #9D65FF;
+            --shadow: 0 4px 12px rgba(58, 45, 93, 0.15);
+            --text-color: #3A2D5D;
+            --light-purple: #E6DDFF;
+            --delete-color: #FF4F4F;
+            --batch-color: #6C5CE7;
+            --batch-hover: #7D6BFF;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        /* 导航栏 */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--secondary-color);
+            box-shadow: var(--shadow);
+            z-index: 100;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--primary-color);
+            letter-spacing: 1px;
+        }
+        
+        .upload-btn {
+            background: linear-gradient(135deg, var(--accent-color), var(--hover-color));
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(138, 79, 255, 0.3);
+        }
+        
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(138, 79, 255, 0.4);
+        }
+        
+        .batch-btn {
+            background: linear-gradient(135deg, var(--batch-color), var(--batch-hover));
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(108, 92, 231, 0.3);
+            margin-right: 10px;
+        }
+        
+        .batch-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.4);
+        }
+        
+        header > div {
+            display: flex;
+            align-items: center;
+        }
+        
+        /* 分类导航 */
+        .categories {
+            margin-top: 80px;
+            padding: 20px 0;
+            overflow-x: auto;
+            white-space: nowrap;
+            text-align: center;
+            background-color: var(--secondary-color);
+            position: sticky;
+            top: 70px;
+            z-index: 90;
+            box-shadow: 0 2px 10px rgba(58, 45, 93, 0.08);
+        }
+        
+        .categories::-webkit-scrollbar {
+            height: 5px;
+        }
+        
+        .categories::-webkit-scrollbar-thumb {
+            background-color: var(--accent-color);
+            border-radius: 5px;
+        }
+        
+        .category-btn {
+            display: inline-block;
+            padding: 8px 20px;
+            margin: 0 5px;
+            background: none;
+            border: none;
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 20px;
+        }
+        
+        .category-btn:hover, .category-btn.active {
+            color: var(--accent-color);
+            background-color: rgba(138, 79, 255, 0.1);
+        }
+        
+        .category-btn.active {
+            font-weight: 600;
+            position: relative;
+        }
+        
+        .category-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 2px;
+            background-color: var(--accent-color);
+        }
+        
+        /* 瀑布流布局 */
+        .gallery {
+            padding: 20px;
+            column-count: 4;
+            column-gap: 15px;
+        }
+        
+        .gallery-item {
+            break-inside: avoid;
+            margin-bottom: 15px;
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .gallery-item:hover {
+            transform: scale(1.02);
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: filter 0.3s ease;
+        }
+        
+        .gallery-item:hover img {
+            filter: brightness(0.9);
+        }
+        
+        .gallery-item::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(58, 45, 93, 0.6), transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .gallery-item:hover::after {
+            opacity: 1;
+        }
+        
+        .delete-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: var(--delete-color);
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 2;
+        }
+        
+        .gallery-item:hover .delete-btn {
+            opacity: 1;
+        }
+        
+        .delete-btn:hover {
+            background-color: #FF3030;
+        }
+        
+        /* 模态框 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(58, 45, 93, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 5px 25px rgba(58, 45, 93, 0.3);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-header h2 {
+            color: var(--primary-color);
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--primary-color);
+        }
+        
+        .password-input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid var(--light-purple);
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border 0.3s ease;
+        }
+        
+        .password-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(138, 79, 255, 0.2);
+        }
+        
+        .upload-area {
+            border: 2px dashed var(--light-purple);
+            border-radius: 5px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: none;
+            position: relative;
+        }
+        
+        .upload-area.active {
+            display: block;
+        }
+        
+        .upload-area:hover {
+            border-color: var(--accent-color);
+            background-color: rgba(138, 79, 255, 0.05);
+        }
+        
+        .upload-area i {
+            font-size: 48px;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+        }
+        
+        .upload-area p {
+            color: var(--primary-color);
+        }
+        
+        .submit-btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s ease;
+            display: none;
+        }
+        
+        .submit-btn.active {
+            display: block;
+        }
+        
+        .submit-btn:hover {
+            background-color: var(--hover-color);
+        }
+        
+        .verify-btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s ease;
+            margin-bottom: 10px;
+        }
+        
+        .verify-btn:hover {
+            background-color: var(--hover-color);
+        }
+        
+        /* 确认删除模态框 */
+        .confirm-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1001;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .confirm-content {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+        
+        .confirm-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .confirm-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .confirm-delete {
+            background-color: var(--delete-color);
+            color: white;
+        }
+        
+        .confirm-delete:hover {
+            background-color: #FF3030;
+        }
+        
+        .confirm-cancel {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        
+        .confirm-cancel:hover {
+            background-color: #e0e0e0;
+        }
+        
+        /* Batch mode styles */
+        .batch-mode .gallery-item {
+            cursor: pointer;
+        }
+        
+        .batch-mode .gallery-item.selected {
+            outline: 3px solid var(--batch-color);
+            outline-offset: -3px;
+        }
+        
+        .batch-controls {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            box-shadow: 0 5px 25px rgba(58, 45, 93, 0.3);
+            display: flex;
+            gap: 15px;
+            z-index: 99;
+            display: none;
+        }
+        
+        .batch-controls.active {
+            display: flex;
+        }
+        
+        .batch-category-select {
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 1px solid var(--light-purple);
+            background-color: white;
+            color: var(--text-color);
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        /* 图片信息样式 */
+        .image-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 8px 10px;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            color: white;
+            font-size: 12px;
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .gallery-item:hover .image-info {
+            opacity: 1;
+        }
+        
+        .image-info small {
+            display: block;
+            font-size: 10px;
+            opacity: 0.8;
+            margin-top: 2px;
+        }
+        
+        /* 上传进度样式 */
+        .upload-progress-container {
+            width: 100%;
+            margin: 10px 0;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .upload-progress-item {
+            margin: 5px 0;
+            padding: 5px;
+            border-radius: 4px;
+            background-color: rgba(138, 79, 255, 0.1);
+        }
+        
+        .upload-progress-text {
+            font-size: 14px;
+            margin-bottom: 3px;
+        }
+        
+        .upload-progress-bar {
+            height: 5px;
+            background-color: #e0e0e0;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .upload-progress-bar-inner {
+            height: 100%;
+            width: 0%;
+            background-color: var(--accent-color);
+            transition: width 0.3s;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            .gallery {
+                column-count: 3;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .gallery {
+                column-count: 2;
+            }
+            
+            .logo {
+                font-size: 24px;
+            }
+            
+            .upload-btn, .batch-btn {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+            
+            .batch-controls {
+                flex-wrap: wrap;
+                border-radius: 20px;
+                padding: 10px 15px;
+                gap: 10px;
+                width: 90%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .gallery {
+                column-count: 1;
+            }
+            
+            .categories {
+                top: 60px;
+            }
+            
+            .confirm-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            header {
+                padding: 15px;
+            }
+            
+            .batch-btn {
+                margin-right: 5px;
+                padding: 8px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header>
+        <div class="logo">INSIGHT STUDIO</div>
+        <div>
+            <button class="batch-btn" id="batchBtn">
+                <i class="fas fa-tasks"></i> 批量处理
+            </button>
+            <button class="upload-btn" id="uploadBtn">
+                <i class="fas fa-cloud-upload-alt"></i> 上传图片
+            </button>
+        </div>
+    </header>
+    
+    <!-- 分类导航 -->
+    <div class="categories">
+        <button class="category-btn active" data-category="all">全部</button>
+        <button class="category-btn" data-category="living-room">客厅</button>
+        <button class="category-btn" data-category="dining-room">餐厅</button>
+        <button class="category-btn" data-category="kitchen">厨房</button>
+        <button class="category-btn" data-category="bathroom">卫浴空间</button>
+        <button class="category-btn" data-category="close-up">特写</button>
+        <button class="category-btn" data-category="commercial">工装</button>
+    </div>
+    
+    <!-- 图片画廊 -->
+    <div class="gallery" id="gallery">
+        <!-- 图片将通过JavaScript动态加载 -->
+    </div>
+    
+    <!-- 上传模态框 -->
+    <div class="modal" id="uploadModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">验证密码</h2>
+                <button class="close-btn" id="closeModal">&times;</button>
+            </div>
+            <div id="passwordSection">
+                <input type="password" class="password-input" id="passwordInput" placeholder="请输入上传密码">
+                <button class="verify-btn" id="verifyBtn">验证密码</button>
+            </div>
+            <div class="upload-area" id="uploadArea">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>点击或拖拽文件到此处上传</p>
+                <input type="file" id="fileInput" multiple accept="image/*" style="display: none;">
+                <div class="upload-progress-container" id="progressContainer" style="display: none;"></div>
+            </div>
+            <button class="submit-btn" id="submitBtn">上传图片</button>
+        </div>
+    </div>
+    
+    <!-- 批量处理模态框 -->
+    <div class="modal" id="batchModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>批量处理验证</h2>
+                <button class="close-btn" id="closeBatchModal">&times;</button>
+            </div>
+            <div id="batchPasswordSection">
+                <input type="password" class="password-input" id="batchPasswordInput" placeholder="请输入批量处理密码">
+                <button class="verify-btn" id="batchVerifyBtn">验证密码</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 批量操作控制栏 -->
+    <div class="batch-controls" id="batchControls">
+        <button class="batch-btn" id="selectAllBtn">
+            <i class="fas fa-check-square"></i> 全选
+        </button>
+        <select class="batch-category-select" id="batchCategorySelect">
+            <option value="">选择分类</option>
+            <option value="living-room">客厅</option>
+            <option value="dining-room">餐厅</option>
+            <option value="kitchen">厨房</option>
+            <option value="bathroom">卫浴空间</option>
+            <option value="close-up">特写</option>
+            <option value="commercial">工装</option>
+        </select>
+        <button class="batch-btn" id="applyCategoryBtn">
+            <i class="fas fa-tag"></i> 应用分类
+        </button>
+        <button class="confirm-btn confirm-delete" id="batchDeleteBtn">
+            <i class="fas fa-trash"></i> 删除选中
+        </button>
+        <button class="confirm-btn confirm-cancel" id="exitBatchModeBtn">
+            <i class="fas fa-times"></i> 退出批量模式
+        </button>
+    </div>
+    
+    <!-- 确认删除模态框 -->
+    <div class="confirm-modal" id="confirmModal">
+        <div class="confirm-content">
+            <h3>确认删除</h3>
+            <p>您确定要删除这张图片吗？此操作无法撤销。</p>
+            <div class="confirm-buttons">
+                <button class="confirm-btn confirm-delete" id="confirmDelete">删除</button>
+                <button class="confirm-btn confirm-cancel" id="confirmCancel">取消</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 图片数据 - 包含Excel文件中的新图片
+        let imageData = [
+            { 
+                src: "https://i.ibb.co/ynqn979B/1616582625.png", 
+                category: "living-room", 
+                title: "现代客厅设计", 
+                id: generateId(),
+                uploadTime: "2023-05-15",
+                size: 1024 * 1024 * 2.5
+            },
+            { 
+                src: "https://i.ibb.co/RkmPVxhG/269777001.png",
+                category: "dining-room", 
+                title: "餐厅照明设计", 
+                id: generateId(),
+                uploadTime: "2023-06-20",
+                size: 1024 * 1024 * 1.8
+            },
+            { 
+                src: "https://i.ibb.co/ynqn979B/2502995871.png", 
+                category: "kitchen", 
+                title: "开放式厨房", 
+                id: generateId(),
+                uploadTime: "2023-07-10",
+                size: 1024 * 1024 * 3.2
+            },
+            // 从Excel文件中添加的新图片
+            { 
+                src: "https://i.ibb.co/5xGx66LK/2335827049.png",
+                category: "close-up", 
+                title: "特写照片", 
+                id: generateId(),
+                uploadTime: "2023-08-01",
+                size: 1024 * 1024 * 1.5
+            },
+            { 
+                src: "https://i.ibb.co/ns5dZy7h/1616582625.png",
+                category: "commercial", 
+                title: "工装设计", 
+                id: generateId(),
+                uploadTime: "2023-08-05",
+                size: 1024 * 1024 * 2.8
+            },
+            { 
+                src: "https://i.ibb.co/qFyY3dYc/3529175652.png",
+                category: "bathroom", 
+                title: "卫浴空间设计", 
+                id: generateId(),
+                uploadTime: "2023-08-10",
+                size: 1024 * 1024 * 2.1
+            }
+        ];
+        
+        // 生成唯一ID
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        }
+        
+        // DOM元素
+        const gallery = document.getElementById('gallery');
+        const categoryBtns = document.querySelectorAll('.category-btn');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const uploadModal = document.getElementById('uploadModal');
+        const closeModal = document.getElementById('closeModal');
+        const passwordInput = document.getElementById('passwordInput');
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const submitBtn = document.getElementById('submitBtn');
+        const verifyBtn = document.getElementById('verifyBtn');
+        const passwordSection = document.getElementById('passwordSection');
+        const modalTitle = document.getElementById('modalTitle');
+        const confirmModal = document.getElementById('confirmModal');
+        const confirmDelete = document.getElementById('confirmDelete');
+        const confirmCancel = document.getElementById('confirmCancel');
+        const progressContainer = document.getElementById('progressContainer');
+        
+        // 批量处理相关DOM元素
+        const batchBtn = document.getElementById('batchBtn');
+        const batchModal = document.getElementById('batchModal');
+        const closeBatchModal = document.getElementById('closeBatchModal');
+        const batchPasswordInput = document.getElementById('batchPasswordInput');
+        const batchVerifyBtn = document.getElementById('batchVerifyBtn');
+        const batchControls = document.getElementById('batchControls');
+        const selectAllBtn = document.getElementById('selectAllBtn');
+        const batchCategorySelect = document.getElementById('batchCategorySelect');
+        const applyCategoryBtn = document.getElementById('applyCategoryBtn');
+        const batchDeleteBtn = document.getElementById('batchDeleteBtn');
+        const exitBatchModeBtn = document.getElementById('exitBatchModeBtn');
+        
+        // 当前选中的分类
+        let currentCategory = 'all';
+        let isPasswordVerified = false;
+        let imageToDelete = null;
+        let isBatchMode = false;
+        let selectedImages = [];
+        
+        // 初始化画廊
+        function initGallery() {
+            gallery.innerHTML = '';
+            const filteredImages = currentCategory === 'all' 
+                ? [...imageData] // 创建新数组避免引用问题
+                : imageData.filter(img => img.category === currentCategory);
+            
+            filteredImages.forEach(img => {
+                addImageToGallery(img);
+            });
+        }
+        
+        // 添加图片到画廊
+        function addImageToGallery(img, prepend = false) {
+            const item = document.createElement('div');
+            item.className = 'gallery-item';
+            item.dataset.category = img.category;
+            item.dataset.id = img.id;
+            
+            // 直接使用img标签显示图片
+            const imgElement = document.createElement('img');
+            imgElement.src = img.src;
+            imgElement.alt = img.title;
+            imgElement.loading = 'lazy';
+            
+            // 图片信息标签
+            const infoLabel = document.createElement('div');
+            infoLabel.className = 'image-info';
+            infoLabel.innerHTML = `
+                <div>${img.title}</div>
+                ${img.uploadTime ? `<small>${formatFileSize(img.size)} • ${new Date(img.uploadTime).toLocaleDateString()}</small>` : ''}
+            `;
+            
+            // 删除按钮
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'delete-btn';
+            deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+            deleteBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                showDeleteConfirm(img.id);
+            });
+            
+            item.appendChild(imgElement);
+            item.appendChild(infoLabel);
+            item.appendChild(deleteBtn);
+            
+            // 添加到画廊
+            if (prepend && gallery.firstChild) {
+                gallery.insertBefore(item, gallery.firstChild);
+            } else {
+                gallery.appendChild(item);
+            }
+            
+            if (prepend) {
+                setTimeout(() => {
+                    item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 300);
+            }
+        }
+        
+        // 格式化文件大小
+        function formatFileSize(bytes) {
+            if (!bytes) return '';
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / 1048576).toFixed(1) + ' MB';
+        }
+        
+        // 显示删除确认框
+        function showDeleteConfirm(imageId) {
+            imageToDelete = imageId;
+            confirmModal.style.display = 'flex';
+        }
+        
+        // 删除图片
+        function deleteImage() {
+            if (!imageToDelete) return;
+            
+            imageData = imageData.filter(img => img.id !== imageToDelete);
+            initGallery();
+            imageToDelete = null;
+            confirmModal.style.display = 'none';
+        }
+        
+        // 进入批量模式
+        function enterBatchMode() {
+            isBatchMode = true;
+            document.body.classList.add('batch-mode');
+            batchControls.classList.add('active');
+            selectedImages = [];
+        }
+        
+        // 退出批量模式
+        function exitBatchMode() {
+            isBatchMode = false;
+            document.body.classList.remove('batch-mode');
+            batchControls.classList.remove('active');
+            
+            // 移除所有选中状态
+            document.querySelectorAll('.gallery-item.selected').forEach(item => {
+                item.classList.remove('selected');
+            });
+            selectedImages = [];
+        }
+        
+        // 分类按钮点击事件
+        categoryBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                categoryBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentCategory = btn.dataset.category;
+                initGallery();
+            });
+        });
+        
+        // 上传按钮点击事件
+        uploadBtn.addEventListener('click', () => {
+            isPasswordVerified = false;
+            passwordInput.value = '';
+            uploadArea.classList.remove('active');
+            submitBtn.classList.remove('active');
+            passwordSection.style.display = 'block';
+            modalTitle.textContent = '验证密码';
+            uploadModal.style.display = 'flex';
+            progressContainer.style.display = 'none';
+            progressContainer.innerHTML = '';
+        });
+        
+        // 关闭上传模态框
+        closeModal.addEventListener('click', () => {
+            uploadModal.style.display = 'none';
+            passwordInput.value = '';
+            isPasswordVerified = false;
+            fileInput.value = '';
+            progressContainer.style.display = 'none';
+            progressContainer.innerHTML = '';
+        });
+        
+        // 验证密码
+        verifyBtn.addEventListener('click', () => {
+            const password = passwordInput.value;
+            
+            if (password !== '123456') {
+                alert('密码错误！');
+                return;
+            }
+            
+            isPasswordVerified = true;
+            passwordSection.style.display = 'none';
+            uploadArea.classList.add('active');
+            submitBtn.classList.add('active');
+            modalTitle.textContent = '上传图片';
+        });
+        
+        // 点击上传区域触发文件选择
+        uploadArea.addEventListener('click', () => {
+            if (isPasswordVerified) {
+                fileInput.click();
+            }
+        });
+        
+        // 拖拽上传
+        uploadArea.addEventListener('dragover', (e) => {
+            if (!isPasswordVerified) return;
+            e.preventDefault();
+            uploadArea.style.borderColor = 'var(--accent-color)';
+            uploadArea.style.backgroundColor = 'rgba(138, 79, 255, 0.1)';
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            if (!isPasswordVerified) return;
+            uploadArea.style.borderColor = 'var(--light-purple)';
+            uploadArea.style.backgroundColor = 'transparent';
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            if (!isPasswordVerified) return;
+            e.preventDefault();
+            uploadArea.style.borderColor = 'var(--light-purple)';
+            uploadArea.style.backgroundColor = 'transparent';
+            
+            if (e.dataTransfer.files.length > 0) {
+                fileInput.files = e.dataTransfer.files;
+            }
+        });
+        
+        // 提交上传 - 使用ImgBB API
+        submitBtn.addEventListener('click', async () => {
+            if (!isPasswordVerified) return;
+            
+            const files = fileInput.files;
+            if (!files || files.length === 0) {
+                alert('请选择要上传的图片！');
+                return;
+            }
+
+            try {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 上传中...';
+                progressContainer.style.display = 'block';
+                progressContainer.innerHTML = '';
+                
+                // 上传所有图片
+                const uploadPromises = Array.from(files).map(file => {
+                    return uploadImageToImgBB(file);
+                });
+                
+                // 等待所有上传完成
+                const results = await Promise.all(uploadPromises);
+                const successfulUploads = results.filter(result => result.success);
+                
+                if (successfulUploads.length > 0) {
+                    // 添加到现有数据
+                    imageData = [...successfulUploads.map(result => result.image), ...imageData];
+                    
+                    // 更新画廊显示
+                    successfulUploads.forEach(result => {
+                        if (currentCategory === 'all' || result.image.category === currentCategory) {
+                            addImageToGallery(result.image, true);
+                        }
+                    });
+                    
+                    alert(`成功上传 ${successfulUploads.length} 张图片！`);
+                } else {
+                    alert('没有图片上传成功！');
+                }
+                
+                uploadModal.style.display = 'none';
+                fileInput.value = '';
+                
+            } catch (error) {
+                console.error('上传出错:', error);
+                alert(`上传出错: ${error.message}`);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '上传图片';
+                
+                // 3秒后清除进度显示
+                setTimeout(() => {
+                    progressContainer.style.display = 'none';
+                    progressContainer.innerHTML = '';
+                }, 3000);
+            }
+        });
+        
+        // 上传图片到ImgBB
+        async function uploadImageToImgBB(file) {
+            // 创建进度项
+            const progressItem = document.createElement('div');
+            progressItem.className = 'upload-progress-item';
+            
+            const progressText = document.createElement('div');
+            progressText.className = 'upload-progress-text';
+            progressText.textContent = `准备上传: ${file.name}`;
+            
+            const progressBar = document.createElement('div');
+            progressBar.className = 'upload-progress-bar';
+            
+            const progressBarInner = document.createElement('div');
+            progressBarInner.className = 'upload-progress-bar-inner';
+            
+            progressBar.appendChild(progressBarInner);
+            progressItem.appendChild(progressText);
+            progressItem.appendChild(progressBar);
+            progressContainer.appendChild(progressItem);
+            
+            try {
+                progressText.textContent = `上传中: ${file.name}`;
+                
+                const formData = new FormData();
+                formData.append('image', file);
+                
+                // 使用ImgBB API
+                const response = await fetch('https://api.imgbb.com/1/upload?key=8c28e844cf9b4e735926235ce7a2b520', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    progressText.textContent = `上传成功: ${file.name}`;
+                    progressItem.style.backgroundColor = 'rgba(0, 200, 0, 0.1)';
+                    progressBarInner.style.width = '100%';
+                    
+                    // 返回上传成功的图片对象
+                    return {
+                        success: true,
+                        image: {
+                            src: data.data.url,
+                            display_url: data.data.display_url,
+                            thumb_url: data.data.thumb?.url,
+                            category: currentCategory === 'all' ? 'living-room' : currentCategory,
+                            title: file.name.replace(/\.[^/.]+$/, ""),
+                            id: generateId(),
+                            uploadTime: new Date().toISOString(),
+                            size: data.data.size,
+                            width: data.data.width,
+                            height: data.data.height
+                        }
+                    };
+                } else {
+                    progressText.textContent = `上传失败: ${file.name}`;
+                    progressItem.style.backgroundColor = 'rgba(255, 0, 0, 0.1)';
+                    throw new Error(data.error?.message || '上传失败');
+                }
+            } catch (error) {
+                progressText.textContent = `错误: ${file.name} - ${error.message}`;
+                progressItem.style.backgroundColor = 'rgba(255, 0, 0, 0.1)';
+                return {
+                    success: false,
+                    error: error.message
+                };
+            }
+        }
+        
+        // 确认删除
+        confirmDelete.addEventListener('click', deleteImage);
+        
+        // 取消删除
+        confirmCancel.addEventListener('click', () => {
+            imageToDelete = null;
+            confirmModal.style.display = 'none';
+        });
+        
+        // 批量处理按钮点击事件
+        batchBtn.addEventListener('click', () => {
+            batchModal.style.display = 'flex';
+            batchPasswordInput.value = '';
+        });
+        
+        // 关闭批量处理模态框
+        closeBatchModal.addEventListener('click', () => {
+            batchModal.style.display = 'none';
+        });
+        
+        // 验证批量处理密码
+        batchVerifyBtn.addEventListener('click', () => {
+            if (batchPasswordInput.value !== '123456') {
+                alert('密码错误！');
+                return;
+            }
+            
+            batchModal.style.display = 'none';
+            enterBatchMode();
+        });
+        
+        // 画廊点击事件（批量模式下）
+        gallery.addEventListener('click', (e) => {
+            if (!isBatchMode) return;
+            
+            const galleryItem = e.target.closest('.gallery-item');
+            if (!galleryItem) return;
+            
+            galleryItem.classList.toggle('selected');
+            const imageId = galleryItem.dataset.id;
+            
+            if (galleryItem.classList.contains('selected')) {
+                if (!selectedImages.includes(imageId)) {
+                    selectedImages.push(imageId);
+                }
+            } else {
+                selectedImages = selectedImages.filter(id => id !== imageId);
+            }
+        });
+        
+        // 全选按钮
+        selectAllBtn.addEventListener('click', () => {
+            const allItems = document.querySelectorAll('.gallery-item');
+            const allSelected = selectedImages.length === allItems.length;
+            
+            allItems.forEach(item => {
+                const imageId = item.dataset.id;
+                
+                if (allSelected) {
+                    item.classList.remove('selected');
+                    selectedImages = selectedImages.filter(id => id !== imageId);
+                } else {
+                    item.classList.add('selected');
+                    if (!selectedImages.includes(imageId)) {
+                        selectedImages.push(imageId);
+                    }
+                }
+            });
+        });
+        
+        // 应用分类
+        applyCategoryBtn.addEventListener('click', () => {
+            const newCategory = batchCategorySelect.value;
+            if (!newCategory) {
+                alert('请选择分类！');
+                return;
+            }
+            
+            if (selectedImages.length === 0) {
+                alert('请先选择图片！');
+                return;
+            }
+            
+            imageData = imageData.map(img => {
+                if (selectedImages.includes(img.id)) {
+                    return { ...img, category: newCategory };
+                }
+                return img;
+            });
+            
+            initGallery();
+            alert(`成功更新 ${selectedImages.length} 张图片的分类！`);
+        });
+        
+        // 批量删除
+        batchDeleteBtn.addEventListener('click', () => {
+            if (selectedImages.length === 0) {
+                alert('请先选择图片！');
+                return;
+            }
+            
+            if (confirm(`确定要删除选中的 ${selectedImages.length} 张图片吗？`)) {
+                imageData = imageData.filter(img => !selectedImages.includes(img.id));
+                initGallery();
+                alert(`成功删除 ${selectedImages.length} 张图片！`);
+                selectedImages = [];
+            }
+        });
+        
+        // 退出批量模式
+        exitBatchModeBtn.addEventListener('click', exitBatchMode);
+        
+        // 点击模态框外部关闭
+        window.addEventListener('click', (e) => {
+            if (e.target === uploadModal) {
+                uploadModal.style.display = 'none';
+                passwordInput.value = '';
+                isPasswordVerified = false;
+                fileInput.value = '';
+                progressContainer.style.display = 'none';
+                progressContainer.innerHTML = '';
+            }
+            
+            if (e.target === confirmModal) {
+                imageToDelete = null;
+                confirmModal.style.display = 'none';
+            }
+            
+            if (e.target === batchModal) {
+                batchModal.style.display = 'none';
+            }
+        });
+        
+        // 初始化
+        initGallery();
+    </script>
+</body>
+</html>
